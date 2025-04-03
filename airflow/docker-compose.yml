@@ -1,0 +1,58 @@
+services:
+  postgres:
+    image: postgres:13
+    container_name: postgres_airflow
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    volumes:
+      - postgres_airflow:/var/lib/postgresql/data
+    restart: always
+
+  webserver:
+    image: apache/airflow:2.8.1
+    container_name: airflow_webserver
+    depends_on:
+      - postgres
+    environment:
+      AIRFLOW__CORE__EXECUTOR: SequentialExecutor
+      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+      AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+      AIRFLOW__WEBSERVER__EXPOSE_CONFIG: 'true'
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./requirements.txt:/requirements.txt
+      - ./scripts:/opt/airflow/scripts
+    ports:
+      - "8080:8080"
+    command: >
+      bash -c "
+        pip install -r /requirements.txt &&
+        airflow db init &&
+        /opt/airflow/scripts/create_user.sh &&
+        airflow webserver
+      "
+    restart: always
+
+  scheduler:
+    image: apache/airflow:2.8.1
+    container_name: airflow_scheduler
+    depends_on:
+      - webserver
+    environment:
+      AIRFLOW__CORE__EXECUTOR: SequentialExecutor
+      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./requirements.txt:/requirements.txt
+    command: >
+      bash -c "
+        pip install -r /requirements.txt &&
+        airflow db migrate &&
+        airflow scheduler
+      "
+    restart: always
+
+volumes:
+  postgres_airflow:
