@@ -1,48 +1,56 @@
+# Stock Dashboard with Apache Airflow
 
-# 📈 Stock Dashboard ETL with Airflow, Docker and PostgreSQL
+This project implements a stock data ETL pipeline using **Apache Airflow** and **Yahoo Finance** data. It allows scheduled extraction and storage of historical stock prices for selected tickers into a PostgreSQL database.
 
-This project implements an automated ETL pipeline that downloads historical stock data (AAPL, MSFT, SPY) using `yfinance`, processes it with Python, and stores it in a PostgreSQL database. The workflow is orchestrated using **Apache Airflow**, all running in a **Dockerized environment**.
+## 🚀 Features
 
----
+- Download daily stock data using `yfinance`
+- Store it in a PostgreSQL database via SQLAlchemy
+- Scheduled execution using Airflow DAGs
+- Docker-based local development setup
 
-## 🧱 Project Structure
+## 🗂 Project Structure
 
 ```
 stock-dashboard/
 │
-├── dags/                   # Airflow DAGs (etl_stock_data.py)
-├── scripts/                # Initialization scripts (e.g. create_user.sh)
-├── .env                    # Environment variables for stock database
-├── requirements.txt        # Python dependencies (yfinance, pandas, sqlalchemy, etc.)
-├── docker-compose.yml      # Docker Compose configuration
-└── README.md               # Project documentation
+├── .venv/                     # Python virtual environment (excluded from version control)
+│
+├── airflow/
+│   ├── dags/                  # Airflow DAGs
+│   │   ├── __init__.py
+│   │   ├── dag_prova.py
+│   │   └── etl_stock_data.py
+│   │
+│   ├── scripts/               # Utility scripts for Airflow (e.g., user creation)
+│   │   └── create_user.sh
+│   │
+│   ├── .env                   # Environment variables used by docker-compose and DAGs
+│   ├── docker-compose.yml     # Docker environment configuration
+│   └── requirements.txt       # Python dependencies
+│
+└── README.md                  # Project documentation
 ```
 
----
+## 🧰 Requirements
 
-## 🚀 Tech Stack
+- Docker
+- Docker Compose
 
-- [Apache Airflow](https://airflow.apache.org/)
-- [PostgreSQL](https://www.postgresql.org/)
-- [Docker & Docker Compose](https://www.docker.com/)
-- [yfinance](https://github.com/ranaroussi/yfinance)
-- Python (pandas, sqlalchemy, etc.)
-
----
-
-## ⚙️ Quick Start
-
-### 1. Clone the repository
+## ▶️ How to Run
 
 ```bash
-git clone https://github.com/your-username/stock-dashboard.git
-cd stock-dashboard
+cd airflow/
+docker-compose up --build
 ```
 
-### 2. Create the `.env` file
+Then access the Airflow UI at [http://localhost:8080](http://localhost:8080)
 
-```env
-# .env
+## 📊 Environment Variables
+
+Defined in `.env` (sample values):
+
+```
 STOCK_DB_HOST=stock_pg
 STOCK_DB_PORT=5432
 STOCK_DB_USER=stockuser
@@ -50,69 +58,15 @@ STOCK_DB_PASSWORD=stockpass
 STOCK_DB_NAME=stockdb
 ```
 
-### 3. Start the system
+## 📅 Airflow DAGs
 
-```bash
-docker-compose up -d
+Main DAG: `etl_stock_data.py`  
+Runs daily and processes data for these tickers:
+
+```python
+["AAPL", "MSFT", "SPY"]
 ```
 
-This will launch:
-- A PostgreSQL instance for Airflow (`postgres_airflow`)
-- A PostgreSQL instance for stock data (`stock_pg`)
-- The Airflow webserver (`http://localhost:8080`)
-- The Airflow scheduler
+## 📎 License
 
----
-
-## 🔁 DAG Overview
-
-The DAG `etl_stock_data`:
-
-- Runs **daily** (`@daily`)
-- Downloads stock data from the past 30 days for AAPL, MSFT, and SPY
-- Validates required columns
-- Appends data into the `stock_prices` table in the `stockdb` database
-
----
-
-## 🔐 Airflow Access
-
-- **URL:** [http://localhost:8080](http://localhost:8080)
-- **Username:** `admin`
-- **Password:** `admin` *(can be changed in `create_user.sh` script)*
-
----
-
-## 🐘 Connect to PostgreSQL via DBeaver (optional)
-
-- **Host:** `localhost`
-- **Port:** `5432`
-- **Database:** `stockdb`
-- **User:** `stockuser`
-- **Password:** `stockpass`
-
-Make sure the port is properly exposed in `docker-compose.yml` if needed.
-
----
-
-## ☁️ Deployment on GCP (optional)
-
-To deploy this stack on **Google Cloud Platform**, you can use:
-- **Compute Engine** with Docker
-- Or **Cloud Composer** (managed Airflow) + **Cloud SQL**
-
-See the deployment section for more details (coming soon).
-
----
-
-## 📝 TODO
-
-- [ ] Add an interactive dashboard (Streamlit or Dash)
-- [ ] Write unit/integration tests for data validation
-- [ ] Perform technical analysis on stock data
-
----
-
-## 📄 License
-
-MIT © 2025 - [Your Name or Team]
+MIT License
