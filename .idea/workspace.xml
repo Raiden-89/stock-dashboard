@@ -4,15 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e1cbacc3-733a-4a6d-9869-2feacdc6fcb9" name="Changes" comment="airflow funzionnate">
-      <change afterPath="$PROJECT_DIR$/airflow/dags/dag_prova.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/data_exploration.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/launcher.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+    <list default="true" id="e1cbacc3-733a-4a6d-9869-2feacdc6fcb9" name="Changes" comment="Working Job Airflow etl_stock_data">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/airflow/dags/etl_stock_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/airflow/dags/etl_stock_data.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/airflow/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/airflow/docker-compose.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -170,7 +163,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1743675739339</updated>
-      <workItem from="1743675740285" duration="29043000" />
+      <workItem from="1743675740285" duration="35175000" />
     </task>
     <task id="LOCAL-00001" summary="develop start">
       <option name="closed" value="true" />
@@ -196,7 +189,15 @@
       <option name="project" value="LOCAL" />
       <updated>1743688331274</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Working Job Airflow etl_stock_data">
+      <option name="closed" value="true" />
+      <created>1743968398937</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1743968398937</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -206,7 +207,8 @@
     <MESSAGE value="develop start" />
     <MESSAGE value="develop start2" />
     <MESSAGE value="airflow funzionnate" />
-    <option name="LAST_COMMIT_MESSAGE" value="airflow funzionnate" />
+    <MESSAGE value="Working Job Airflow etl_stock_data" />
+    <option name="LAST_COMMIT_MESSAGE" value="Working Job Airflow etl_stock_data" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/stock_dashboard$etl_stock_data.coverage" NAME="etl_stock_data Coverage Results" MODIFIED="1743678208768" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/airflow/dags" />
