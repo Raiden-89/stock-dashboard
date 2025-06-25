@@ -1,0 +1,99 @@
+services:
+
+  postgres_airflow:
+    image: postgres:13
+    container_name: postgres_airflow
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    volumes:
+      - postgres_airflow:/var/lib/postgresql/data
+    networks:
+      stock_net:
+        ipv4_address: 172.25.0.2
+    restart: always
+
+  stock_pg:
+    image: postgres:15
+    container_name: stock_pg
+    environment:
+      POSTGRES_USER: stockuser
+      POSTGRES_PASSWORD: stockpass
+      POSTGRES_DB: stockdb
+    volumes:
+      - stock_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      stock_net:
+        ipv4_address: 172.25.0.3
+    restart: always
+
+  webserver:
+    image: apache/airflow:2.8.1
+    container_name: airflow_webserver
+    depends_on:
+      - postgres_airflow
+      - stock_pg
+    env_file:
+      - .env
+    environment:
+      AIRFLOW__CORE__EXECUTOR: SequentialExecutor
+      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres_airflow/airflow
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+      AIRFLOW__WEBSERVER__EXPOSE_CONFIG: "true"
+      AIRFLOW__WEBSERVER__SECRET_KEY: supersegreta123
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./requirements.txt:/requirements.txt
+      - ./scripts:/opt/airflow/scripts
+    ports:
+      - "8080:8080"
+    networks:
+      stock_net:
+        ipv4_address: 172.25.0.4
+    command: >
+      bash -c "
+        pip install -r /requirements.txt &&
+        airflow db init &&
+        /opt/airflow/scripts/create_user.sh &&
+        airflow webserver
+      "
+    restart: always
+
+  scheduler:
+    image: apache/airflow:2.8.1
+    container_name: airflow_scheduler
+    depends_on:
+      - webserver
+    env_file:
+      - .env
+    environment:
+      AIRFLOW__CORE__EXECUTOR: SequentialExecutor
+      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres_airflow/airflow
+      AIRFLOW__WEBSERVER__SECRET_KEY: supersegreta123
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./requirements.txt:/requirements.txt
+    networks:
+      stock_net:
+        ipv4_address: 172.25.0.5
+    command: >
+      bash -c "
+        pip install -r /requirements.txt &&
+        airflow db migrate &&
+        airflow scheduler
+      "
+    restart: always
+
+volumes:
+  postgres_airflow:
+  stock_data:
+
+networks:
+  stock_net:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.25.0.0/24
